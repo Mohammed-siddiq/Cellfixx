@@ -5,13 +5,27 @@
  */
 package cellfixx.solutions;
 
+import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.sql.Connection;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
-
+import javax.swing.JTextField;
+import java.sql.*;
+import javax.swing.JButton;
 /**
  *
  * @author Mohammed Siddiq
  */
 public class Cellfixx extends javax.swing.JFrame {
+    private String usere;
+    private String passworde;
+    private Connection conn;
+    private PreparedStatement pst;
+    private ResultSet rs;
+    private boolean loggedin;
+    private int security_q;
+    private String security_ans;
 
     /**
      * Creates new form Cellfixx
@@ -1178,7 +1192,7 @@ public class Cellfixx extends javax.swing.JFrame {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // TODO add your handling code here:
-        if (loggedin) {
+        /*if (loggedin) {
 
             jp1.setVisible(true);
             jpall.setVisible(true);
@@ -1196,7 +1210,7 @@ public class Cellfixx extends javax.swing.JFrame {
 
         } else {
             JOptionPane.showMessageDialog(null, "You are not logged in.");
-        }
+        }*/
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
@@ -1208,14 +1222,14 @@ public class Cellfixx extends javax.swing.JFrame {
 
         }
         jpabout.setVisible(true);*/
-        if (jp1.isVisible()) {
+      /*  if (jp1.isVisible()) {
             jp1.setVisible(false);
         } else if (jpFAQS1.isVisible()) {
             jpFAQS1.setVisible(false);
         } else if (jpthemes.isVisible()) {
             jpthemes.setVisible(false);
         }
-        jpabout.setVisible(true);
+        jpabout.setVisible(true);*/
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void tfunameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tfunameMouseClicked
@@ -1244,15 +1258,15 @@ public class Cellfixx extends javax.swing.JFrame {
 
     private void bregisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bregisterActionPerformed
         // TODO add your handling code here:
-
-        signingup = true;
+/*
+       // signingup = true;
         if (password_confirm()) {
             String sql = "insert into gym (gname,guname,gpassword,gsecurityq,gsecuritya,settingscount) "
             + "values(?,?,?,?,?,?)";
             boolean registered = false;
             try {
                 String confpassword;
-                conn.setAutoCommit(false);
+              /*  conn.setAutoCommit(false);
 
                 gymname = tfgymname.getText().toLowerCase();
 
@@ -1300,7 +1314,7 @@ public class Cellfixx extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Please enter all the approriate details.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
-
+*/
     }//GEN-LAST:event_bregisterActionPerformed
 
     private void pfconfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pfconfActionPerformed
@@ -1308,20 +1322,21 @@ public class Cellfixx extends javax.swing.JFrame {
     }//GEN-LAST:event_pfconfActionPerformed
 
     private void pfconfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pfconfKeyReleased
-        try {
+        /*try {
             // TODO add your handling code here:
             String pass = pfconf.getText();
 
             if (pass.length() > 0 && pass.equals(pf.getText())) {
 
-                load_img("right.png", confirm_pass);
+           //     load_img("right.png", confirm_pass);
 
             } else {
-                load_img("wrong.png", confirm_pass);
+               // load_img("wrong.png", confirm_pass);
             }
-        } catch (IOException ex) {
-            Logger.getLogger(Signup.class.getName()).log(Level.SEVERE, null, ex);
         }
+        catch (IOException ex) {
+            //Logger.getLogger(Signup.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
     }//GEN-LAST:event_pfconfKeyReleased
 
     private void pfconfKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pfconfKeyTyped
@@ -1345,7 +1360,7 @@ public class Cellfixx extends javax.swing.JFrame {
     private void tfanswerKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfanswerKeyReleased
         // TODO add your handling code here:
 
-        perform_action(bregister, evt);
+//        perform_action(bregister, evt);
     }//GEN-LAST:event_tfanswerKeyReleased
 
     private void pfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pfActionPerformed
@@ -1365,14 +1380,12 @@ public class Cellfixx extends javax.swing.JFrame {
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         // TODO add your handling code here:
-        if (trial_expired()) {
-            return;
-        }
+       
         jplogin.setVisible(false);
         jpforgotpassword.setVisible(true);
-        forgot_setvisibility(false);
+    //    forgot_setvisibility(false);
         ftf_seca.setText("");
-        ftf_secq.setText(security_question.getItemAt(security_q).toString());
+       // ftf_secq.setText(security_question.getItemAt(security_q).toString());
 
     }//GEN-LAST:event_jLabel3MouseClicked
 
@@ -1404,11 +1417,11 @@ public class Cellfixx extends javax.swing.JFrame {
                 loggedin = true;
                 security_q = rs.getInt("gsecurityq");
                 tflusername.setText("Username");
-                monthly_amount = rs.getDouble("Months_amt");
-                for_month = rs.getInt("For_month");
+                //monthly_amount = rs.getDouble("Months_amt");
+                //for_month = rs.getInt("For_month");
                 pfl.setText("");
                 hidefields();
-                update_trialperiod();
+                
                 /* usere=rs.getString("guname");
                 passworde=rs.getString("gpassword");
                 System.out.println("username="+usere+"\npassword="+passworde);*/
@@ -1551,7 +1564,7 @@ public class Cellfixx extends javax.swing.JFrame {
 
     private void bamountpaidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bamountpaidActionPerformed
         // TODO add your handling code here:
-        String slno;
+/*        String slno;
         int op = JOptionPane.showConfirmDialog(null, tfdname1.getText() + " has Paid " + tfdamt1.getText() + "  ?", "Confirm", JOptionPane.YES_NO_OPTION);
         if (op == JOptionPane.YES_OPTION) {
             if (password_confirm()) {
@@ -1581,7 +1594,7 @@ public class Cellfixx extends javax.swing.JFrame {
             }
 
         }
-
+*/
     }//GEN-LAST:event_bamountpaidActionPerformed
 
     private void stf_amountrcvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stf_amountrcvActionPerformed
@@ -1594,14 +1607,14 @@ public class Cellfixx extends javax.swing.JFrame {
 
     private void tabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabMouseClicked
         // TODO add your handling code here:
-        int index = tab.getSelectedIndex();
+  /*      int index = tab.getSelectedIndex();
         switch (index) {
             case 0:
             Display_mymembers();
             display_search(true);
             break;
             case 1:
-            updatingdp = false;// adding member so load_image effects there
+//            updatingdp = false;// adding member so load_image effects there
             display_search(false);
             if (jchmexisting.isSelected()) {
                 setvisible_existing(true);
@@ -1627,7 +1640,7 @@ public class Cellfixx extends javax.swing.JFrame {
                 firstclick = false;
             }
 
-        }
+        }*/
     }//GEN-LAST:event_tabMouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -1655,6 +1668,7 @@ public class Cellfixx extends javax.swing.JFrame {
 
         entered = searchfield.getText().trim().toLowerCase();
         int c = 0;
+      /*  int s_row;
         for (int i = s_row; c < table.getRowCount(); c++, i = (i + 1) % table.getRowCount()) {
             name = table.getValueAt(i, 1).toString();
             System.out.println("String processing:  " + entered);
@@ -1671,7 +1685,7 @@ public class Cellfixx extends javax.swing.JFrame {
                 break;
             }
 
-        }
+        }*/
 
     }//GEN-LAST:event_searchfieldKeyReleased
 
@@ -1715,7 +1729,7 @@ public class Cellfixx extends javax.swing.JFrame {
     private void fpf_confpassKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fpf_confpassKeyReleased
         // TODO add your handling code here:
         perform_action(fbsetpass, evt);
-        try {
+     /*   try {
             // TODO add your handling code here:
             String pass = fpf_confpass.getText();
 
@@ -1728,7 +1742,7 @@ public class Cellfixx extends javax.swing.JFrame {
             }
         } catch (IOException ex) {
             Logger.getLogger(Signup.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }//GEN-LAST:event_fpf_confpassKeyReleased
 
     private void fbsetpassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fbsetpassActionPerformed
@@ -1933,4 +1947,74 @@ public class Cellfixx extends javax.swing.JFrame {
     private javax.swing.JTextField tfmptamt;
     private javax.swing.JTextField tfuname;
     // End of variables declaration//GEN-END:variables
+
+    private void close() {
+       
+    int op = JOptionPane.showConfirmDialog(null, "Are you sure you want to Exit?", "Confirm Close  ", JOptionPane.YES_NO_CANCEL_OPTION);
+        if (op == JOptionPane.YES_OPTION) {
+            /* WindowEvent winClosingEvent = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
+             Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(winClosingEvent);*/
+            this.dispose();
+
+        }
+
+    
+    
+    }
+
+    private void cleartext(JTextField tfuname, String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private boolean password_confirm() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void hidefields() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void Display_mymembers() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void display_search(boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void display_memberfields() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void setrowselected(char ch, JTable table_mymember) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void delete_record(String mid) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void load_updatefields() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void update_setvisible(boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void show_payementfields() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void perform_action(JButton fbresetpass, KeyEvent evt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void forgot_setvisibility(boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void update_password() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
