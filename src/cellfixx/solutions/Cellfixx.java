@@ -5,33 +5,80 @@
  */
 package cellfixx.solutions;
 
+import java.awt.Frame;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+
 /**
  *
  * @author Mohammed Siddiq
  */
 public class Cellfixx extends javax.swing.JFrame {
+
     private String usere;
     private String passworde;
     private Connection conn;
     private PreparedStatement pst;
     private ResultSet rs;
-    private boolean loggedin;
+    private boolean loggedin = false;
     private int security_q;
     private String security_ans;
+    private boolean registered = false;
+    private String username;
+    private String password;
+    private String resetdate;
+    private String Shopname;
+    private String user;
 
     /**
      * Creates new form Cellfixx
      */
     public Cellfixx() {
         initComponents();
+        this.setExtendedState(Frame.MAXIMIZED_BOTH);
+
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        this.setMaximizedBounds(env.getMaximumWindowBounds());
+        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent we) {
+                close();
+            }
+        });
+        try {
+            conn = Dbc.connect_db();
+            rs = Dbc.fetch_shop(conn);
+            if (rs != null) {
+                registered = true;
+                security_ans = rs.getString("Securityanswer");
+                username = rs.getString("Uname");
+                password = rs.getString("Password");
+                resetdate = rs.getString("Resetdate");
+
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Cellfixx.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     /**
@@ -44,6 +91,14 @@ public class Cellfixx extends javax.swing.JFrame {
     private void initComponents() {
 
         jp1 = new javax.swing.JPanel();
+        jplogin = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        tflusername = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        blogin = new javax.swing.JButton();
+        pfl = new javax.swing.JPasswordField();
         jpsignup = new javax.swing.JPanel();
         jlans = new javax.swing.JLabel();
         confirm_pass = new javax.swing.JLabel();
@@ -61,14 +116,6 @@ public class Cellfixx extends javax.swing.JFrame {
         jlquest = new javax.swing.JLabel();
         pf = new javax.swing.JPasswordField();
         jlpass = new javax.swing.JLabel();
-        jplogin = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        tflusername = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        blogin = new javax.swing.JButton();
-        pfl = new javax.swing.JPasswordField();
         jpall = new javax.swing.JPanel();
         tab = new javax.swing.JTabbedPane();
         jpmembers = new javax.swing.JPanel();
@@ -144,6 +191,111 @@ public class Cellfixx extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jp1.setLayout(new java.awt.CardLayout());
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Log in", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14), new java.awt.Color(255, 255, 0))); // NOI18N
+
+        jLabel1.setText("User Name");
+
+        tflusername.setText("Username");
+        tflusername.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tflusernameMouseClicked(evt);
+            }
+        });
+        tflusername.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tflusernameActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 3, 11)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel3.setText("Forgot Password ?");
+        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel3MouseClicked(evt);
+            }
+        });
+
+        jLabel2.setText("Password");
+
+        blogin.setText("Log in");
+        blogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bloginActionPerformed(evt);
+            }
+        });
+
+        pfl.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pflActionPerformed(evt);
+            }
+        });
+        pfl.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                pflKeyReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addGap(54, 54, 54)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(tflusername)
+                            .addComponent(pfl, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(blogin))
+                        .addGap(40, 40, 40)))
+                .addContainerGap(59, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tflusername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addGap(31, 31, 31)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(pfl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(27, 27, 27)
+                .addComponent(jLabel3)
+                .addGap(31, 31, 31)
+                .addComponent(blogin)
+                .addContainerGap(42, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jploginLayout = new javax.swing.GroupLayout(jplogin);
+        jplogin.setLayout(jploginLayout);
+        jploginLayout.setHorizontalGroup(
+            jploginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jploginLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jploginLayout.setVerticalGroup(
+            jploginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jploginLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jp1.add(jplogin, "card4");
 
         jpsignup.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Sign-Up", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 18), new java.awt.Color(0, 204, 255))); // NOI18N
 
@@ -272,10 +424,10 @@ public class Cellfixx extends javax.swing.JFrame {
                                     .addComponent(pfconf))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(jpsignupLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel7)
                                     .addGroup(jpsignupLayout.createSequentialGroup()
                                         .addGap(34, 34, 34)
-                                        .addComponent(confirm_pass))))
+                                        .addComponent(confirm_pass, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel7)))
                             .addComponent(tfanswer, javax.swing.GroupLayout.Alignment.LEADING))
                         .addContainerGap(484, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpsignupLayout.createSequentialGroup()
@@ -303,7 +455,7 @@ public class Cellfixx extends javax.swing.JFrame {
                 .addGroup(jpsignupLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jlconfpass)
                     .addComponent(pfconf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(confirm_pass))
+                    .addComponent(confirm_pass, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
                 .addGroup(jpsignupLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(security_question, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -320,111 +472,6 @@ public class Cellfixx extends javax.swing.JFrame {
         );
 
         jp1.add(jpsignup, "card2");
-
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Log in", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14), new java.awt.Color(255, 255, 0))); // NOI18N
-
-        jLabel1.setText("User Name");
-
-        tflusername.setText("Username");
-        tflusername.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tflusernameMouseClicked(evt);
-            }
-        });
-        tflusername.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tflusernameActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setFont(new java.awt.Font("Tahoma", 3, 11)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel3.setText("Forgot Password ?");
-        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel3MouseClicked(evt);
-            }
-        });
-
-        jLabel2.setText("Password");
-
-        blogin.setText("Log in");
-        blogin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bloginActionPerformed(evt);
-            }
-        });
-
-        pfl.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pflActionPerformed(evt);
-            }
-        });
-        pfl.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                pflKeyReleased(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addGap(54, 54, 54)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(tflusername)
-                            .addComponent(pfl, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(blogin))
-                        .addGap(40, 40, 40)))
-                .addContainerGap(59, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tflusername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(31, 31, 31)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(pfl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(27, 27, 27)
-                .addComponent(jLabel3)
-                .addGap(31, 31, 31)
-                .addComponent(blogin)
-                .addContainerGap(42, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout jploginLayout = new javax.swing.GroupLayout(jplogin);
-        jplogin.setLayout(jploginLayout);
-        jploginLayout.setHorizontalGroup(
-            jploginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jploginLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jploginLayout.setVerticalGroup(
-            jploginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jploginLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jp1.add(jplogin, "card4");
 
         tab.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1194,42 +1241,42 @@ public class Cellfixx extends javax.swing.JFrame {
         // TODO add your handling code here:
         /*if (loggedin) {
 
-            jp1.setVisible(true);
-            jpall.setVisible(true);
+         jp1.setVisible(true);
+         jpall.setVisible(true);
 
-            tab.setSelectedIndex(4);
-            if (jphome.isVisible()) {
-                jphome.setVisible(false);
-            } else if (jpFAQS1.isVisible()) {
-                jpFAQS1.setVisible(false);
-            } else if (jpabout.isVisible()) {
-                jpabout.setVisible(false);
-            } else if (jpthemes.isVisible()) {
-                jpthemes.setVisible(false);
-            }
+         tab.setSelectedIndex(4);
+         if (jphome.isVisible()) {
+         jphome.setVisible(false);
+         } else if (jpFAQS1.isVisible()) {
+         jpFAQS1.setVisible(false);
+         } else if (jpabout.isVisible()) {
+         jpabout.setVisible(false);
+         } else if (jpthemes.isVisible()) {
+         jpthemes.setVisible(false);
+         }
 
-        } else {
-            JOptionPane.showMessageDialog(null, "You are not logged in.");
-        }*/
+         } else {
+         JOptionPane.showMessageDialog(null, "You are not logged in.");
+         }*/
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         // TODO add your handling code here:
         /*if (cpanel != null) {
-            cpanel.setVisible(false);
-        } else {
-            jphome.setVisible(false);
+         cpanel.setVisible(false);
+         } else {
+         jphome.setVisible(false);
 
-        }
-        jpabout.setVisible(true);*/
-      /*  if (jp1.isVisible()) {
-            jp1.setVisible(false);
-        } else if (jpFAQS1.isVisible()) {
-            jpFAQS1.setVisible(false);
-        } else if (jpthemes.isVisible()) {
-            jpthemes.setVisible(false);
-        }
-        jpabout.setVisible(true);*/
+         }
+         jpabout.setVisible(true);*/
+        /*  if (jp1.isVisible()) {
+         jp1.setVisible(false);
+         } else if (jpFAQS1.isVisible()) {
+         jpFAQS1.setVisible(false);
+         } else if (jpthemes.isVisible()) {
+         jpthemes.setVisible(false);
+         }
+         jpabout.setVisible(true);*/
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void tfunameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tfunameMouseClicked
@@ -1258,63 +1305,64 @@ public class Cellfixx extends javax.swing.JFrame {
 
     private void bregisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bregisterActionPerformed
         // TODO add your handling code here:
-/*
-       // signingup = true;
-        if (password_confirm()) {
-            String sql = "insert into gym (gname,guname,gpassword,gsecurityq,gsecuritya,settingscount) "
-            + "values(?,?,?,?,?,?)";
-            boolean registered = false;
+
+        // signingup = true;
+         
+            String sql = "insert into shop (name,uname,password,securityquestion,securityanswer) "
+                    + "values(?,?,?,?,?)";
+            registered = false;
             try {
                 String confpassword;
-              /*  conn.setAutoCommit(false);
+                  conn.setAutoCommit(false);
 
-                gymname = tfgymname.getText().toLowerCase();
+                 Shopname = tfgymname.getText().toLowerCase();
 
-                user = tfuname.getText().toLowerCase();
-                password = new String(pf.getPassword());
-                System.out.println(password);
-                confpassword = new String(pfconf.getPassword());
-                System.out.println(confpassword);
-                security_q = security_question.getSelectedIndex();
-                security_ans = tfanswer.getText();
-                if (!"your gymn name".equals(gymname) && gymname.length() != 0) {
-                    if (!"your name".equals(user) && user.length() != 0) {
-                        if (password.length() >= 8 && password.equals(confpassword)) {
-                            if (!security_ans.equals("your answer") && security_ans.length() != 0) {
-                                pst = conn.prepareStatement(sql);
-                                pst.setString(1, gymname);
-                                pst.setString(2, user);
-                                pst.setString(3, password);
-                                pst.setInt(4, security_q);
-                                pst.setString(5, security_ans);
-                                pst.setInt(6, 2);
-                                int ans = JOptionPane.showConfirmDialog(null, "Are you sure you want to register"
-                                    + " with the following Credentials!?");
-                                if (ans == JOptionPane.YES_OPTION) {
-                                    pst.executeUpdate();
-                                    JOptionPane.showMessageDialog(null, user + " your " + gymname + " is successfully registered"
-                                        + "\n username : " + user + "\n password : " + password, "Registered!!", JOptionPane.PLAIN_MESSAGE);
+                 user = tfuname.getText().toLowerCase();
+                 password = new String(pf.getPassword());
+                 System.out.println(password);
+                 confpassword = new String(pfconf.getPassword());
+                 System.out.println(confpassword);
+                 security_q = security_question.getSelectedIndex();
+                 security_ans = tfanswer.getText();
+                 if (!"your gymn name".equals(Shopname) && Shopname.length() != 0) {
+                 if (!"your name".equals(user) && user.length() != 0) {
+                 if (password.length() >= 8 && password.equals(confpassword)) {
+                 if (!security_ans.equals("your answer") && security_ans.length() != 0) {
+                 pst = conn.prepareStatement(sql);
+                 pst.setString(1, Shopname);
+                 pst.setString(2, user);
+                 pst.setString(3, password);
+                 pst.setInt(4, security_q);
+                 pst.setString(5, security_ans);
+                 int ans = JOptionPane.showConfirmDialog(null, "Are you sure you want to register"
+                 + " with the following Credentials!?");
+                 if (ans == JOptionPane.YES_OPTION) {
+                 pst.executeUpdate();
+                 JOptionPane.showMessageDialog(null, user + " your " + Shopname + " is successfully registered"
+                 + "\n username : " + user + "\n password : " + password, "Registered!!", JOptionPane.PLAIN_MESSAGE);
 
-                                    registered = true;
-                                    jpsignup.setVisible(false);
-                                    jplogin.setVisible(true);
+                 registered = true;
+                 jpsignup.setVisible(false);
+                 jplogin.setVisible(true);
 
-                                    conn.commit();
-                                }
+                 conn.commit();
+                 }
+                 
+                 
 
-                            }
-                        }
-                    }
-                }
+                 }
+                 }
+                 }
+                 }
 
-            } catch (SQLException se) {
-                JOptionPane.showMessageDialog(null, se + "\n db deleted restore if you have a copy", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            if (!registered) {
-                JOptionPane.showMessageDialog(null, "Please enter all the approriate details.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-*/
+                 } catch (SQLException se) {
+                 JOptionPane.showMessageDialog(null, se + "\n db deleted restore if you have a copy", "Error", JOptionPane.ERROR_MESSAGE);
+                 }
+                 if (!registered) {
+                 JOptionPane.showMessageDialog(null, "Please enter all the approriate details.", "Error", JOptionPane.ERROR_MESSAGE);
+                 }
+                 
+                 
     }//GEN-LAST:event_bregisterActionPerformed
 
     private void pfconfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pfconfActionPerformed
@@ -1322,21 +1370,20 @@ public class Cellfixx extends javax.swing.JFrame {
     }//GEN-LAST:event_pfconfActionPerformed
 
     private void pfconfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pfconfKeyReleased
-        /*try {
+        try {
             // TODO add your handling code here:
             String pass = pfconf.getText();
 
             if (pass.length() > 0 && pass.equals(pf.getText())) {
 
-           //     load_img("right.png", confirm_pass);
+                load_img("right.png", confirm_pass);
 
             } else {
-               // load_img("wrong.png", confirm_pass);
+                load_img("wrong.png", confirm_pass);
             }
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             //Logger.getLogger(Signup.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
     }//GEN-LAST:event_pfconfKeyReleased
 
     private void pfconfKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pfconfKeyTyped
@@ -1380,24 +1427,30 @@ public class Cellfixx extends javax.swing.JFrame {
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         // TODO add your handling code here:
-       
+
         jplogin.setVisible(false);
         jpforgotpassword.setVisible(true);
-    //    forgot_setvisibility(false);
+        //    forgot_setvisibility(false);
         ftf_seca.setText("");
-       // ftf_secq.setText(security_question.getItemAt(security_q).toString());
+        // ftf_secq.setText(security_question.getItemAt(security_q).toString());
 
     }//GEN-LAST:event_jLabel3MouseClicked
 
     private void bloginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bloginActionPerformed
         // TODO add your handling code here:
 
+        if (!registered) {
+            JOptionPane.showMessageDialog(this, "Register your Service centre First!");
+            jpsignup.setVisible(true);
+            jplogin.setVisible(false);
+            return;
+        }
         usere = tflusername.getText().toLowerCase();
         passworde = new String(pfl.getPassword());
 
         String sql = "Select * "
-        + "from Gym  "
-        + "where guname =? and gpassword=?";
+                + "from Gym  "
+                + "where guname =? and gpassword=?";
 
         try {
             pst = conn.prepareStatement(sql);
@@ -1409,8 +1462,8 @@ public class Cellfixx extends javax.swing.JFrame {
 
                 //uncomment for deployment
                 /* if (trial_expired()) {//check for trial period only if uname and password are right, else rs = null
-                    return;
-                }*/
+                 return;
+                 }*/
                 jplogin.setVisible(false);
                 //jploggedin.setVisible(true);//trying with jpall
 
@@ -1421,16 +1474,16 @@ public class Cellfixx extends javax.swing.JFrame {
                 //for_month = rs.getInt("For_month");
                 pfl.setText("");
                 hidefields();
-                
+
                 /* usere=rs.getString("guname");
-                passworde=rs.getString("gpassword");
-                System.out.println("username="+usere+"\npassword="+passworde);*/
+                 passworde=rs.getString("gpassword");
+                 System.out.println("username="+usere+"\npassword="+passworde);*/
                 jpall.setVisible(true);
                 Display_mymembers();
                 display_search(true);
             } else {
                 JOptionPane.showMessageDialog(null, "The Username/Password is incorrect.",
-                    "Invalid Username/Password.", JOptionPane.ERROR_MESSAGE);
+                        "Invalid Username/Password.", JOptionPane.ERROR_MESSAGE);
 
             }
         } catch (SQLException ex) {
@@ -1565,36 +1618,36 @@ public class Cellfixx extends javax.swing.JFrame {
     private void bamountpaidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bamountpaidActionPerformed
         // TODO add your handling code here:
 /*        String slno;
-        int op = JOptionPane.showConfirmDialog(null, tfdname1.getText() + " has Paid " + tfdamt1.getText() + "  ?", "Confirm", JOptionPane.YES_NO_OPTION);
-        if (op == JOptionPane.YES_OPTION) {
-            if (password_confirm()) {
+         int op = JOptionPane.showConfirmDialog(null, tfdname1.getText() + " has Paid " + tfdamt1.getText() + "  ?", "Confirm", JOptionPane.YES_NO_OPTION);
+         if (op == JOptionPane.YES_OPTION) {
+         if (password_confirm()) {
 
-                slno = table_mymember1.getValueAt(table_mymember1.getSelectedRow(), 0).toString();
-                System.out.println(slno);
-                System.out.println(hm.containsKey(Integer.parseInt(slno)));
-                if (hm.containsKey(Integer.parseInt(slno))) {
-                    try {
-                        String mid = hm.get((Integer.parseInt(slno))).toString();
-                        update_payements(Integer.parseInt(mid), "Yes");
-                        update_lastpdate(mid);
-                        JOptionPane.showMessageDialog(null, "Successfully Updated");
-                        flush_rows(table_mymember1);
-                        hm.clear();
-                        no_payee = 0;
-                        Display_payementinfo();
-                        update_for_month();
-                        update_monthly_amount(Double.parseDouble(tfdamt1.getText()));
-                        flush_fields();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(Signup.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } else {
-                    System.out.println(hm);
-                }
-            }
+         slno = table_mymember1.getValueAt(table_mymember1.getSelectedRow(), 0).toString();
+         System.out.println(slno);
+         System.out.println(hm.containsKey(Integer.parseInt(slno)));
+         if (hm.containsKey(Integer.parseInt(slno))) {
+         try {
+         String mid = hm.get((Integer.parseInt(slno))).toString();
+         update_payements(Integer.parseInt(mid), "Yes");
+         update_lastpdate(mid);
+         JOptionPane.showMessageDialog(null, "Successfully Updated");
+         flush_rows(table_mymember1);
+         hm.clear();
+         no_payee = 0;
+         Display_payementinfo();
+         update_for_month();
+         update_monthly_amount(Double.parseDouble(tfdamt1.getText()));
+         flush_fields();
+         } catch (SQLException ex) {
+         Logger.getLogger(Signup.class.getName()).log(Level.SEVERE, null, ex);
+         }
+         } else {
+         System.out.println(hm);
+         }
+         }
 
-        }
-*/
+         }
+         */
     }//GEN-LAST:event_bamountpaidActionPerformed
 
     private void stf_amountrcvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stf_amountrcvActionPerformed
@@ -1608,48 +1661,48 @@ public class Cellfixx extends javax.swing.JFrame {
     private void tabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabMouseClicked
         // TODO add your handling code here:
   /*      int index = tab.getSelectedIndex();
-        switch (index) {
-            case 0:
-            Display_mymembers();
-            display_search(true);
-            break;
-            case 1:
-//            updatingdp = false;// adding member so load_image effects there
-            display_search(false);
-            if (jchmexisting.isSelected()) {
-                setvisible_existing(true);
-            } else {
-                setvisible_existing(false);
-            }
-            break;
-            case 2:
-            payinfo = true;
-            Display_payementinfo();
-            display_search(true);
-            break;
-            case 3:
-            display_search(false);
-            show_stats();
-            break;
-            case 4:
-            display_search(false);
-            if (firstclick) {
-                setdetails();
-                hidefields();
+         switch (index) {
+         case 0:
+         Display_mymembers();
+         display_search(true);
+         break;
+         case 1:
+         //            updatingdp = false;// adding member so load_image effects there
+         display_search(false);
+         if (jchmexisting.isSelected()) {
+         setvisible_existing(true);
+         } else {
+         setvisible_existing(false);
+         }
+         break;
+         case 2:
+         payinfo = true;
+         Display_payementinfo();
+         display_search(true);
+         break;
+         case 3:
+         display_search(false);
+         show_stats();
+         break;
+         case 4:
+         display_search(false);
+         if (firstclick) {
+         setdetails();
+         hidefields();
 
-                firstclick = false;
-            }
+         firstclick = false;
+         }
 
-        }*/
+         }*/
     }//GEN-LAST:event_tabMouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void searchfieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchfieldMouseClicked
         // TODO add your handling code here:
-      
+
     }//GEN-LAST:event_searchfieldMouseClicked
 
     private void searchfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchfieldActionPerformed
@@ -1668,24 +1721,24 @@ public class Cellfixx extends javax.swing.JFrame {
 
         entered = searchfield.getText().trim().toLowerCase();
         int c = 0;
-      /*  int s_row;
-        for (int i = s_row; c < table.getRowCount(); c++, i = (i + 1) % table.getRowCount()) {
-            name = table.getValueAt(i, 1).toString();
-            System.out.println("String processing:  " + entered);
-            if (name.startsWith(entered)) {
-                table.setRowSelectionInterval(i, i);
-                s_row = (i + 1) % table.getRowCount();
-                display_memberfields();
-                break;
+        /*  int s_row;
+         for (int i = s_row; c < table.getRowCount(); c++, i = (i + 1) % table.getRowCount()) {
+         name = table.getValueAt(i, 1).toString();
+         System.out.println("String processing:  " + entered);
+         if (name.startsWith(entered)) {
+         table.setRowSelectionInterval(i, i);
+         s_row = (i + 1) % table.getRowCount();
+         display_memberfields();
+         break;
 
-            } else if (name.contains(entered)) {
-                table.setRowSelectionInterval(i, i);
-                s_row = (i + 1) % table.getRowCount();
-                display_memberfields();
-                break;
-            }
+         } else if (name.contains(entered)) {
+         table.setRowSelectionInterval(i, i);
+         s_row = (i + 1) % table.getRowCount();
+         display_memberfields();
+         break;
+         }
 
-        }*/
+         }*/
 
     }//GEN-LAST:event_searchfieldKeyReleased
 
@@ -1729,20 +1782,20 @@ public class Cellfixx extends javax.swing.JFrame {
     private void fpf_confpassKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fpf_confpassKeyReleased
         // TODO add your handling code here:
         perform_action(fbsetpass, evt);
-     /*   try {
-            // TODO add your handling code here:
-            String pass = fpf_confpass.getText();
+        /*   try {
+         // TODO add your handling code here:
+         String pass = fpf_confpass.getText();
 
-            if (pass.length() > 0 && pass.equals(fpf_newpass.getText())) {
+         if (pass.length() > 0 && pass.equals(fpf_newpass.getText())) {
 
-                load_img("right.png", conf_pass1);
+         load_img("right.png", conf_pass1);
 
-            } else {
-                load_img("wrong.png", conf_pass1);
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(Signup.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+         } else {
+         load_img("wrong.png", conf_pass1);
+         }
+         } catch (IOException ex) {
+         Logger.getLogger(Signup.class.getName()).log(Level.SEVERE, null, ex);
+         }*/
     }//GEN-LAST:event_fpf_confpassKeyReleased
 
     private void fbsetpassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fbsetpassActionPerformed
@@ -1787,7 +1840,7 @@ public class Cellfixx extends javax.swing.JFrame {
     }//GEN-LAST:event_tfmptamtMouseClicked
 
     private void tfmphoneKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfmphoneKeyTyped
-        // TODO add your handling code here:
+        // TODO addyour handling code here:
         char c = evt.getKeyChar();
         if (!(Character.isDigit(c) || (c == KeyEvent.VK_BACK_SPACE) || (c == KeyEvent.VK_DELETE))) {
             evt.consume();
@@ -1825,7 +1878,7 @@ public class Cellfixx extends javax.swing.JFrame {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    javax.swing.UIManager.setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
                     break;
                 }
             }
@@ -1949,8 +2002,8 @@ public class Cellfixx extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void close() {
-       
-    int op = JOptionPane.showConfirmDialog(null, "Are you sure you want to Exit?", "Confirm Close  ", JOptionPane.YES_NO_CANCEL_OPTION);
+
+        int op = JOptionPane.showConfirmDialog(null, "Are you sure you want to Exit?", "Confirm Close  ", JOptionPane.YES_NO_CANCEL_OPTION);
         if (op == JOptionPane.YES_OPTION) {
             /* WindowEvent winClosingEvent = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
              Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(winClosingEvent);*/
@@ -1958,8 +2011,6 @@ public class Cellfixx extends javax.swing.JFrame {
 
         }
 
-    
-    
     }
 
     private void cleartext(JTextField tfuname, String name) {
@@ -1967,7 +2018,32 @@ public class Cellfixx extends javax.swing.JFrame {
     }
 
     private boolean password_confirm() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        JLabel label;
+        int option;
+        JPanel panel = new JPanel();
+        label = new JLabel("Enter Your password To Continue:");
+        JPasswordField pass = new JPasswordField(30);
+        panel.add(label);
+        panel.add(pass);
+        String[] options = new String[]{"OK", "Cancel"};
+        option = JOptionPane.showOptionDialog(null, panel, "Aunthenticate.",
+                JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+                null, options, options[0]);
+        if (option == 0) // pressing OK button
+        {
+
+            String passworden = pass.getText();
+            System.out.println(password + "\n" + passworden);
+
+            if (passworde.equals(password)) {
+                return true;
+            }
+
+        }
+         JOptionPane.showMessageDialog(null, "Wrong Password!\n Please try again, with the right password", "Invalid Password", JOptionPane.ERROR_MESSAGE);
+            return false;
+        
+
     }
 
     private void hidefields() {
@@ -2016,5 +2092,14 @@ public class Cellfixx extends javax.swing.JFrame {
 
     private void update_password() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void load_img(String fname, JLabel label) throws IOException {
+
+        Path path = Paths.get(fname);
+        byte[] imagedata = Files.readAllBytes(path);
+        ImageIcon format = new ImageIcon(imagedata);
+        label.setIcon(format);
+
     }
 }
